@@ -168,12 +168,14 @@ public void enroll()
                 ObjectId ob=doc.getObjectId("student");
 
                 Bson filter2 = Filters.eq("_id",ob);
-                Bson projection2 = Projections.fields(Projections.include("name"));
+                Bson projection2 = Projections.fields(Projections.exclude("_id","phone no","age"));
                 Document doc2= booksCollection.find(filter2).projection(projection2).first();
+//                System.out.println(doc2.toJson());
                 String name3=doc2.getString("name");
 
                 if(name.equals(name3)){
-                    Bson filter = Filters.eq("_id",name);
+//                    System.out.println(name3);
+                    Bson filter = Filters.eq("_id",ob);
                     Bson update= Updates.set("name",name2);
                     booksCollection.updateOne(filter, update);
                 }
