@@ -6,6 +6,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Updates;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -110,7 +111,88 @@ public void enroll()
         }
     }
     public void updateembed()
-    {
+    {Scanner scan = new Scanner(System.in);
+        String uri = "mongodb://localhost:27017/";
+        try {
+
+            MongoClient mongoClient = MongoClients.create(uri);
+            MongoDatabase database = mongoClient.getDatabase("Student");
+            MongoCollection<Document> booksCollection = database.getCollection("Student");
+            MongoCollection<Document> booksCollection2 = database.getCollection("Course");
+            MongoCollection<Document> booksCollection3 = database.getCollection("enroll");
+            MongoCollection<Document> booksCollection4 = database.getCollection("enroll2");
+
+            System.out.println("update embedded doc");
+            System.out.println("enter the name of the student");
+            String name=scan.nextLine();
+
+            System.out.println("enter the New name of the student");
+            String name2=scan.nextLine();
+
+            Bson filter = Filters.eq("student.name",name);
+            Bson update= Updates.set("student.name",name2);
+            booksCollection3.updateOne(filter, update);
+
+
+
+
+
+        } catch (Exception e) {
+            System.out.println("Invalid Account number.");
+        }
 
     }
+    public void updaterefer()
+    {
+        Scanner scan = new Scanner(System.in);
+        String uri = "mongodb://localhost:27017/";
+        try {
+
+            MongoClient mongoClient = MongoClients.create(uri);
+            MongoDatabase database = mongoClient.getDatabase("Student");
+            MongoCollection<Document> booksCollection = database.getCollection("Student");
+            MongoCollection<Document> booksCollection2 = database.getCollection("Course");
+            MongoCollection<Document> booksCollection3 = database.getCollection("enroll");
+            MongoCollection<Document> booksCollection4 = database.getCollection("enroll2");
+
+
+            System.out.println("enter the name of the student");
+            String name=scan.nextLine();
+
+            System.out.println("enter the New name of the student");
+            String name2=scan.nextLine();
+
+            System.out.println("reference Type");
+            Bson projection = Projections.fields(Projections.exclude("type","_id","course"));
+            for(Document doc:booksCollection4.find().projection(projection)){
+                ObjectId ob=doc.getObjectId("student");
+
+                Bson filter2 = Filters.eq("_id",ob);
+                Bson projection2 = Projections.fields(Projections.include("name"));
+                Document doc2= booksCollection.find(filter2).projection(projection2).first();
+                String name3=doc2.getString("name");
+
+                if(name.equals(name3)){
+                    Bson filter = Filters.eq("_id",name);
+                    Bson update= Updates.set("name",name2);
+                    booksCollection.updateOne(filter, update);
+                }
+
+
+            }
+
+//            Bson filter2 = Filters.eq(" ",recev);
+//            Bson projection2 = Projections.fields(Projections.include("Balance"));
+//            Document doc2= booksCollection.find(filter2).projection(projection2).first();
+//            newbal=doc2.getDouble("Balance");
+
+
+
+
+
+        } catch (Exception e) {
+            System.out.println("Invalid Account number.");
+        }
+    }
 }
+
