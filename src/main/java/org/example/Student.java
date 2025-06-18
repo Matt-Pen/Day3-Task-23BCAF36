@@ -147,7 +147,7 @@ public void enroll()
         Scanner scan = new Scanner(System.in);
         String uri = "mongodb://localhost:27017/";
         try {
-
+            System.out.println("Reference update");
             MongoClient mongoClient = MongoClients.create(uri);
             MongoDatabase database = mongoClient.getDatabase("Student");
             MongoCollection<Document> booksCollection = database.getCollection("Student");
