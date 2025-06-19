@@ -5,6 +5,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Updates;
 import org.bson.Document;
@@ -61,7 +62,7 @@ public void enroll()
 
 
         Document doc7 = new Document("type","embedded").append("student",doc).append("course",doc4);
-        Document doc8 = new Document("type","embedded").append("student",doc2).append("course",doc3);
+        Document doc8 = new Document("type","embedded").append("student",doc2).append("course",doc5);
         Document doc9 = new Document("type","embedded").append("student",doc3).append("course",doc6);
         booksCollection3.insertOne(doc7);
         booksCollection3.insertOne(doc8);
@@ -151,8 +152,6 @@ public void enroll()
             MongoClient mongoClient = MongoClients.create(uri);
             MongoDatabase database = mongoClient.getDatabase("Student");
             MongoCollection<Document> booksCollection = database.getCollection("Student");
-            MongoCollection<Document> booksCollection2 = database.getCollection("Course");
-            MongoCollection<Document> booksCollection3 = database.getCollection("enroll");
             MongoCollection<Document> booksCollection4 = database.getCollection("enroll2");
 
 
@@ -195,6 +194,39 @@ public void enroll()
         } catch (Exception e) {
             System.out.println("Invalid Account number.");
         }
+    }
+    public void findstud()
+    {
+        Scanner scan = new Scanner(System.in);
+        String uri = "mongodb://localhost:27017/";
+        try {
+
+            MongoClient mongoClient = MongoClients.create(uri);
+            MongoDatabase database = mongoClient.getDatabase("Student");
+            MongoCollection<Document> booksCollection = database.getCollection("Student");
+            MongoCollection<Document> booksCollection2 = database.getCollection("Course");
+            MongoCollection<Document> booksCollection3 = database.getCollection("enroll");
+            MongoCollection<Document> booksCollection4 = database.getCollection("enroll2");
+
+            String Index = booksCollection3.createIndex(Indexes.ascending("student.name"));
+            System.out.println("Using index");
+            System.out.println("Enter the name of the student:");
+            String name=scan.nextLine();
+
+            Bson filter= Filters.eq("student.name",name);
+            booksCollection3.find(filter).forEach(doc -> System.out.println(doc.toJson()));
+
+
+
+
+
+
+        } catch (Exception e) {
+            System.out.println("Invalid Account number.");
+        }
+
+
+
     }
 }
 
